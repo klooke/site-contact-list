@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lista de Contatos</title>
+    <link rel="stylesheet" href="index.css">
+  </head>
+  <body>
+    <main class="container-col">
+      <div class="container-col">
+        <div class="container-row">
+          <img src="" alt="icone da lista de contatos">
+          <h1>Contatos</h1>
+        </div>
+        <div class="container-row">
+          <div class="search-bar">  
+            <input type="text" name="search-input" id="search-input">
+            <img src="" alt="lupa de pesquisa">
+          </div>
+          <button class="btn-icon-text">
+            <img src="" alt="adicionar">
+            Novo contato
+          </button>
+        </div>
+      </div>
+      <div class="container-row hider-form">
+        <div class="circle">-</div>
+        <form class="container-row">
+          <div class="container-col inp-group">
+            <label for="name">Nome:</label>
+            <input type="text" name="name" id="name" required>
+            <label for="tel-ddd">Número:</label>
+            <span class="input-group">
+              <input type="number" name="tel-ddd" id="tel-ddd" min="0" max="99" required>
+              <input type="tel" name="tel-num" id="tel-num" required>
+            </span>
+          </div>
+          <div class="btn-group">
+            <button class="btn-icon" type="submit">
+              <img src="" alt="concluir cadastro">
+            </button>
+            <button class="btn-icon" type="reset">
+              <img src="" alt="cancelar cadastro">
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="container-col">
+        <table>
+          <tbody>
+            <!-- <tr>
+              <td class="circle">-</td>
+              <td>---</td>
+              <td>(--) ----------</td>
+              <td class="btn-group">
+                <button class="btn-icon">
+                  <img src="" alt="ligar para o contato">
+                </button>
+                <button class="btn-icon">
+                  <img src="" alt="editar contato">
+                </button>
+                <button class="btn-icon">
+                  <img src="" alt="excluir contato">
+                </button>
+              </td>
+            </tr> -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </body>
+</html>
