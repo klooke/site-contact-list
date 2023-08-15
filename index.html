@@ -4,68 +4,102 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lista de Contatos</title>
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="index.css" />
   </head>
   <body>
     <main class="container-col">
-      <div class="container-col">
-        <div class="container-row">
-          <img src="./images/contacts.png" alt="icone da lista de contatos">
-          <h1>Contatos</h1>
+      <div class="container-col" id="main-header">
+        <div id="title">
+          <img
+            src="./images/contacts.png"
+            alt="icone da lista de contatos"
+            id="title-icon"
+          />
+          <h1>CONTATOS</h1>
         </div>
-        <div class="container-row">
-          <div class="search-bar">  
-            <input type="text" name="search-input" id="search-input">
-            <img src="./images/lupe.png" alt="lupa de pesquisa">
+        <div class="container-row" id="toolbar">
+          <div class="container-row" id="search-bar">
+            <input
+              type="text"
+              name="search-input"
+              id="search-input"
+              placeholder="Pesquise..."
+            />
+            <img
+              src="./images/lupe.png"
+              alt="lupa de pesquisa"
+              id="search-icon"
+            />
           </div>
-          <button class="btn-icon-text">
-            <img src="./images/add.png" alt="adicionar">
+          <button class="container-row" id="btn-new-contact">
+            <img src="./images/add.png" alt="adicionar" width="16px" />
             Novo contato
           </button>
         </div>
       </div>
-      <div class="container-row hider-form">
-        <div class="circle">-</div>
-        <form class="container-row">
-          <div class="container-col inp-group">
-            <label for="name">Nome:</label>
-            <input type="text" name="name" id="name" required>
-            <label for="tel-ddd">Número:</label>
-            <span class="input-group">
-              <input type="number" name="tel-ddd" id="tel-ddd" min="0" max="99" required>
-              <input type="tel" name="tel-num" id="tel-num" required>
-            </span>
+      <div class="container-row" id="main-form">
+        <div class="container-col" id="icon-person-large">
+          <p class="circle">A</p>
+        </div>
+        <form class="container-row" id="form-contact">
+          <div class="container-col" id="form-inputs">
+            <div class="container-row">
+              <label for="tel-name">Nome:</label>
+              <input
+                type="text"
+                name="tel-name"
+                id="tel-name"
+                required
+                maxlength="48"
+              />
+            </div>
+            <div class="container-row">
+              <label for="tel-ddd">Número:</label>
+              <input
+                type="number"
+                name="tel-ddd"
+                id="tel-ddd"
+                required
+                min="0"
+                max="99"
+              />
+              <input
+                type="tel"
+                name="tel-num"
+                id="tel-num"
+                required
+                maxlength="9"
+              />
+            </div>
           </div>
-          <div class="btn-group">
+          <div class="container-row" id="form-controls">
             <button class="btn-icon" type="submit">
-              <img src="./images/ok.png" alt="concluir cadastro">
+              <img src="./images/ok.png" alt="concluir cadastro" />
             </button>
             <button class="btn-icon" type="reset">
-              <img src="./images/cancel.png" alt="cancelar cadastro">
+              <img src="./images/cancel.png" alt="cancelar cadastro" />
             </button>
           </div>
         </form>
       </div>
-      <div class="container-col">
+      <div class="container-col" id="main-table">
         <table>
-          <tbody>
-            <!-- <tr>
-              <td class="circle">-</td>
-              <td>---</td>
-              <td>(--) ----------</td>
-              <td class="btn-group">
-                <button class="btn-icon">
-                  <img src="./images/tel.png" alt="ligar para o contato">
-                </button>
-                <button class="btn-icon">
-                  <img src="./images/edit.png" alt="editar contato">
-                </button>
-                <button class="btn-icon">
-                  <img src="./images/bin.png" alt="excluir contato">
-                </button>
-              </td>
-            </tr> -->
-          </tbody>
+          <tr class="container-row">
+            <td><p class="circle">A</p></td>
+            <td>---</td>
+            <td>(--) ----------</td>
+            <td>
+              <button class="btn-icon">
+                <img src="./images/tel.png" alt="ligar para o contato" />
+              </button>
+              <button class="btn-icon">
+                <img src="./images/edit.png" alt="editar contato" />
+              </button>
+              <button class="btn-icon">
+                <img src="./images/bin.png" alt="excluir contato" />
+              </button>
+            </td>
+          </tr>
         </table>
       </div>
     </main>
