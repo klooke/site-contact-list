@@ -45,40 +45,39 @@
           </button>
         </div>
       </div>
-      <div class="container-row" id="main-form">
-        <div class="container-col" id="icon-person-large">
-          <p class="circle">A</p>
+      <div class="container-row hide" id="main-form">
+        <div id="icon-person-large">
+          <p class="circle">-</p>
         </div>
         <form class="container-row" id="form-contact">
-          <div class="container-col" id="form-inputs">
-            <div class="container-row">
-              <label for="tel-name">Nome:</label>
-              <input
-                type="text"
-                name="tel-name"
-                id="tel-name"
-                required
-                maxlength="48"
-              />
-            </div>
-            <div class="container-row">
-              <label for="tel-ddd">Número:</label>
-              <input
-                type="number"
-                name="tel-ddd"
-                id="tel-ddd"
-                required
-                min="0"
-                max="99"
-              />
-              <input
-                type="tel"
-                name="tel-num"
-                id="tel-num"
-                required
-                maxlength="9"
-              />
-            </div>
+          <div id="form-inputs">
+            <label for="tel-name">Nome:</label>
+            <input
+              type="text"
+              name="tel-name"
+              id="tel-name"
+              required
+              maxlength="32"
+            />
+            <label for="tel-ddd">Número:</label>
+            <input
+              type="number"
+              name="tel-ddd"
+              id="tel-ddd"
+              required
+              min="0"
+              max="99"
+            />
+            <label class="hide" for="tel-num">-</label>
+            <input
+              type="tel"
+              name="tel-num"
+              id="tel-num"
+              required
+              pattern="\d{5}-\d{4}"
+              title="ex.: XXXXX-XXXX."
+              maxlength="10"
+            />
           </div>
           <div class="container-row" id="form-controls">
             <button class="btn-icon" type="submit">
@@ -92,22 +91,11 @@
       </div>
       <div class="container-col" id="main-table">
         <table>
-          <tr class="container-row">
-            <td><p class="circle">A</p></td>
-            <td>---</td>
-            <td>(--) ----------</td>
-            <td>
-              <button class="btn-icon">
-                <img src="./images/tel.png" alt="ligar para o contato" />
-              </button>
-              <button class="btn-icon">
-                <img src="./images/edit.png" alt="editar contato" />
-              </button>
-              <button class="btn-icon">
-                <img src="./images/bin.png" alt="excluir contato" />
-              </button>
-            </td>
-          </tr>
+          <tbody>
+            <tr class="container-row" id="tr-default">
+              <td>---</td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </main>
