@@ -83,6 +83,10 @@ function onInputContactName(event) {
         event.target.value ? event.target.value[0].toUpperCase() : "-";
 }
 
+function onInputContactTel(event) {
+    event.target.value = event.target.value.replace(/(\d{5})(\d+)/g, "$1-$2");
+}
+
 function onFormSubmit(event) {
     event.preventDefault();
 
@@ -104,3 +108,4 @@ btnNewContact.addEventListener("click", (e) => onNewContactClick(e));
 form.addEventListener("submit", (e) => onFormSubmit(e));
 form.addEventListener("reset", (e) => onFormReset(e));
 form.querySelector("#tel-name").addEventListener("input", (e) => onInputContactName(e));
+form.querySelector("#tel-num").addEventListener("input", (e) => onInputContactTel(e));
