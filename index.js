@@ -22,6 +22,29 @@ function newContact() {
     return contact;
 }
 
+function appendControlsOnRow(tableRow) {
+    const controls = document.createElement("td");
+    controls.className = "container-row";
+
+    const btnCall = document.createElement("button");
+    btnCall.className = "btn-icon";
+    btnCall.innerHTML = `<img src="./images/tel.png" alt="Ligar para o contato" />`;
+
+    const btnEdit = document.createElement("button");
+    btnEdit.className = "btn-icon";
+    btnEdit.innerHTML = `<img src="./images/edit.png" alt="Editar o contato" />`;
+
+    const btnDel = document.createElement("button");
+    btnDel.className = "btn-icon";
+    btnDel.innerHTML = `<img src="./images/bin.png" alt="Deletar o contato" />`;
+
+    controls.appendChild(btnCall);
+    controls.appendChild(btnEdit);
+    controls.appendChild(btnDel);
+
+    tableRow.appendChild(controls);
+}
+
 function addContactRow(contact) {
     const contactIcon = document.createElement("td");
     contactIcon.innerHTML = `<p class="circle">${contact.iconLetter}</p>`
@@ -38,6 +61,8 @@ function addContactRow(contact) {
     row.appendChild(contactIcon);
     row.appendChild(contactName);
     row.appendChild(contactTel);
+
+    appendControlsOnRow(row);
 
     table.querySelector("tbody").appendChild(row);
 }
