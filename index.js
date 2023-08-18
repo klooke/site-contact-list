@@ -14,10 +14,10 @@ function showElements(...elements) {
 function newContact() {
     let contact = {};
 
+    contact.iconLetter = form.querySelector("#icon-person-large p").innerText;
     contact.name = form.querySelector("#tel-name").value;
     contact.tel = `(${form.querySelector("#tel-ddd").value}) `;
     contact.tel += form.querySelector("#tel-num").value;
-    contact.iconLetter = contact.name[0].toUpperCase();
     
     return contact;
 }
@@ -73,6 +73,11 @@ function onNewContactClick(event) {
     showElements(form);
 }
 
+function onInputContactName(event) {
+    form.querySelector("#icon-person-large p").innerText = 
+        event.target.value ? event.target.value[0].toUpperCase() : "-";
+}
+
 function onFormSubmit(event) {
     event.preventDefault();
 
@@ -91,3 +96,4 @@ function onFormReset(event) {
 btnNewContact.addEventListener("click", (e) => onNewContactClick(e));
 form.addEventListener("submit", (e) => onFormSubmit(e));
 form.addEventListener("reset", (e) => onFormReset(e));
+form.querySelector("#tel-name").addEventListener("input", (e) => onInputContactName(e));
