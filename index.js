@@ -3,6 +3,11 @@ const form = document.getElementById("main-form");
 const table = document.getElementById("main-table");
 const tableRowDefault = document.getElementById("tr-default");
 
+function clearForm() {
+    form.querySelector("#icon-person-large p").innerText = "-";
+    form.querySelectorAll("input").forEach((el) => el.value = "");
+}
+
 function hideElements(...elements) {
     elements.forEach((el) => el.classList.add("hide"));
 }
@@ -84,12 +89,14 @@ function onFormSubmit(event) {
     contact = newContact();
     addContactRow(contact);
 
+    clearForm();
     hideElements(form, tableRowDefault);
 }
 
 function onFormReset(event) {
     event.preventDefault();
 
+    clearForm();
     hideElements(form);
 }
 
