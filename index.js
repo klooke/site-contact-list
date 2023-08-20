@@ -26,6 +26,18 @@ function showElements(...elements) {
     elements.forEach((el) => el.classList.remove("hide"));
 }
 
+function hasDuplicates(contact) {
+    let duplicates = 0;
+
+    Array.from(table.querySelectorAll("tbody tr")).forEach((el) => {
+        if (el !== tableRowOnEdit && (el.cells[2] && el.cells[2].innerText === contact.tel)) {
+            duplicates++;
+        }
+    });
+
+    return duplicates > 0;
+}
+
 function newContact() {
     let contact = {};
 
@@ -33,7 +45,7 @@ function newContact() {
     contact.name = form.querySelector("#tel-name").value;
     contact.tel = `(${form.querySelector("#tel-ddd").value}) `;
     contact.tel += form.querySelector("#tel-num").value;
-    
+
     return contact;
 }
 
@@ -102,47 +114,39 @@ function updateContactRow(contact) {
     cells[2].innerText = contact.tel;
 }
 
-function onCallClick(tableRow) {
-    const callNum = tableRow.cells[2].innerText.replace(/\D+/g, "");
-    
-    window.location = `tel:+55${callNum}`;
-}
-
-function onEditClick(tableRow) {
-    tableRowOnEdit = tableRow;
-
-    fillForm(tableRowOnEdit);
-
-    showElements(form);
-}
-
-function onRemoveClick(tableRow) {
-    tableRow.remove();
-    
-    if (table.querySelector("tbody").childElementCount < 2) {
-        showElements(tableRowDefault);
-    }
-}
-
 function onNewContactClick(event) {
     event.preventDefault();
 
     showElements(form);
 }
 
+function onSubmitClick(event) {
+    form.querySelectorAll("input").forEach((el) => el.setCustomValidity(""));
+}
+
 function onInputContactName(event) {
-    form.querySelector("#icon-person-large p").innerText = 
+    form.querySelector("#icon-person-large p").innerText =
         event.target.value ? event.target.value[0].toUpperCase() : "-";
 }
 
 function onInputContactTel(event) {
-    event.target.value = event.target.value.replace(/(\d{5})(\d+)/g, "$1-$2");
+    event.target.value =
+        event.target.value
+            .replace(/(\D)/g, "")
+            .replace(/(\d{5})(\d+)/g, "$1-$2");
 }
 
 function onFormSubmit(event) {
     event.preventDefault();
 
     contact = newContact();
+
+    if (hasDuplicates(contact)) {
+        form.querySelector("#tel-num").setCustomValidity("Telefone já está cadastrado.");
+        form.querySelector("#tel-num").reportValidity();
+
+        return false;
+    }
 
     if (!tableRowOnEdit) {
         addContactRow(contact);
@@ -162,8 +166,31 @@ function onFormReset(event) {
     hideElements(form);
 }
 
+function onCallClick(tableRow) {
+    const callNum = tableRow.cells[2].innerText.replace(/\D+/g, "");
+
+    window.location = `tel:+55${callNum}`;
+}
+
+function onEditClick(tableRow) {
+    tableRowOnEdit = tableRow;
+
+    fillForm(tableRowOnEdit);
+
+    showElements(form);
+}
+
+function onRemoveClick(tableRow) {
+    tableRow.remove();
+
+    if (table.querySelector("tbody").childElementCount < 2) {
+        showElements(tableRowDefault);
+    }
+}
+
 btnNewContact.addEventListener("click", (e) => onNewContactClick(e));
 form.addEventListener("submit", (e) => onFormSubmit(e));
 form.addEventListener("reset", (e) => onFormReset(e));
+form.querySelector('button[type="submit"]').addEventListener("click", (e) => onSubmitClick(e));
 form.querySelector("#tel-name").addEventListener("input", (e) => onInputContactName(e));
 form.querySelector("#tel-num").addEventListener("input", (e) => onInputContactTel(e));
