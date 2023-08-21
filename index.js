@@ -1,4 +1,5 @@
 const btnNewContact = document.getElementById("btn-new-contact");
+const searchInput = document.getElementById("search-input");
 const form = document.getElementById("main-form");
 const table = document.getElementById("main-table");
 const tableRowDefault = document.getElementById("tr-default");
@@ -124,10 +125,29 @@ function updateContactRow(contact) {
     cells[2].innerText = contact.tel;
 }
 
+function filterTable(name) {
+    let nameLow = name.toLowerCase();
+    table.querySelectorAll("tr").forEach((row) => {
+        if (row.cells[1] && row.cells[1].innerText.toLowerCase().match(`^${nameLow}`)) {
+            showElements(row);
+        } else if (row.cells[1]) {
+            hideElements(row);
+        }
+    });
+}
+
 function onNewContactClick(event) {
     event.preventDefault();
 
     showElements(form);
+}
+
+function onSearchInput(event) {
+    event.preventDefault();
+
+    if (table.childElementCount > 0) {
+        filterTable(event.target.value);
+    }    
 }
 
 function onSubmitClick(event) {
@@ -199,6 +219,7 @@ function onRemoveClick(tableRow) {
 }
 
 btnNewContact.addEventListener("click", (e) => onNewContactClick(e));
+searchInput.addEventListener("input", (e) => onSearchInput(e));
 form.addEventListener("submit", (e) => onFormSubmit(e));
 form.addEventListener("reset", (e) => onFormReset(e));
 form.querySelector('button[type="submit"]').addEventListener("click", (e) => onSubmitClick(e));
