@@ -104,7 +104,17 @@ function addContactRow(contact) {
 
     appendControlsOnRow(row);
 
-    table.querySelector("tbody").appendChild(row);
+    let tBody = table.querySelector("tbody");
+
+    for (tr of tBody.querySelectorAll("tr:not(#tr-default)")) {
+        if (!tr.cells[1]) continue;
+
+        if (contact.name < tr.cells[1].innerText) {
+            return tBody.insertBefore(row, tr);
+        }
+    }
+
+    tBody.appendChild(row);
 }
 
 function updateContactRow(contact) {
