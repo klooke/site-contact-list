@@ -7,228 +7,227 @@ const tableRowDefault = document.getElementById("tr-default");
 let tableRowOnEdit = null;
 
 function clearForm() {
-    form.querySelector("#icon-person-large p").innerText = "-";
-    form.querySelectorAll("input").forEach((el) => el.value = "");
+	form.querySelector("#icon-person-large p").innerText = "-";
+	form.querySelectorAll("input").forEach((el) => (el.value = ""));
 }
 
 function fillForm(tableRow) {
-    let contact = getContact(tableRow);
+	let contact = getContact(tableRow);
 
-    form.querySelector("#icon-person-large p").innerText = contact.iconLetter;
-    form.querySelector("#tel-name").value = contact.name;
-    form.querySelector("#tel-num").value = contact.tel;
+	form.querySelector("#icon-person-large p").innerText = contact.iconLetter;
+	form.querySelector("#tel-name").value = contact.name;
+	form.querySelector("#tel-num").value = contact.tel;
 }
 
 function hideElements(...elements) {
-    elements.forEach((el) => el.classList.add("hide"));
+	elements.forEach((el) => el.classList.add("hide"));
 }
 
 function showElements(...elements) {
-    elements.forEach((el) => el.classList.remove("hide"));
+	elements.forEach((el) => el.classList.remove("hide"));
 }
 
 function hasDuplicates(contact) {
-    let duplicates = 0;
+	let duplicates = 0;
 
-    Array.from(table.querySelectorAll("tbody tr")).forEach((el) => {
-        if (el !== tableRowOnEdit && (el.cells[2] && el.cells[2].innerText === contact.tel)) {
-            duplicates++;
-        }
-    });
+	Array.from(table.querySelectorAll("tbody tr")).forEach((el) => {
+		if (el !== tableRowOnEdit && el.cells[2] && el.cells[2].innerText === contact.tel) {
+			duplicates++;
+		}
+	});
 
-    return duplicates > 0;
+	return duplicates > 0;
 }
 
 function newContact() {
-    let contact = {};
+	let contact = {};
 
-    contact.iconLetter = form.querySelector("#icon-person-large p").innerText;
-    contact.name = form.querySelector("#tel-name").value;
-    contact.tel = form.querySelector("#tel-num").value;
+	contact.iconLetter = form.querySelector("#icon-person-large p").innerText;
+	contact.name = form.querySelector("#tel-name").value;
+	contact.tel = form.querySelector("#tel-num").value;
 
-    return contact;
+	return contact;
 }
 
 function getContact(tableRow) {
-    let contact = {};
+	let contact = {};
 
-    contact.iconLetter = tableRow.cells[0].innerText;
-    contact.name = tableRow.cells[1].innerText;
-    contact.tel = tableRow.cells[2].innerText;
+	contact.iconLetter = tableRow.cells[0].innerText;
+	contact.name = tableRow.cells[1].innerText;
+	contact.tel = tableRow.cells[2].innerText;
 
-    return contact;
+	return contact;
 }
 
 function appendControlsOnRow(tableRow) {
-    const controls = document.createElement("td");
-    controls.className = "container-row";
+	const controls = document.createElement("td");
+	controls.className = "container-row";
 
-    const btnCall = document.createElement("button");
-    btnCall.className = "btn-icon";
-    btnCall.innerHTML = `<img src="./images/tel.png" alt="Ligar para o contato" />`;
-    btnCall.onclick = () => onCallClick(tableRow);
+	const btnCall = document.createElement("button");
+	btnCall.className = "btn-icon";
+	btnCall.innerHTML = `<img src="./images/tel.png" alt="Ligar para o contato" />`;
+	btnCall.onclick = () => onCallClick(tableRow);
 
-    const btnEdit = document.createElement("button");
-    btnEdit.className = "btn-icon";
-    btnEdit.innerHTML = `<img src="./images/edit.png" alt="Editar o contato" />`;
-    btnEdit.onclick = () => onEditClick(tableRow);
+	const btnEdit = document.createElement("button");
+	btnEdit.className = "btn-icon";
+	btnEdit.innerHTML = `<img src="./images/edit.png" alt="Editar o contato" />`;
+	btnEdit.onclick = () => onEditClick(tableRow);
 
-    const btnDel = document.createElement("button");
-    btnDel.className = "btn-icon";
-    btnDel.innerHTML = `<img src="./images/bin.png" alt="Deletar o contato" />`;
-    btnDel.onclick = () => onRemoveClick(tableRow);
+	const btnDel = document.createElement("button");
+	btnDel.className = "btn-icon";
+	btnDel.innerHTML = `<img src="./images/bin.png" alt="Deletar o contato" />`;
+	btnDel.onclick = () => onRemoveClick(tableRow);
 
-    controls.appendChild(btnCall);
-    controls.appendChild(btnEdit);
-    controls.appendChild(btnDel);
+	controls.appendChild(btnCall);
+	controls.appendChild(btnEdit);
+	controls.appendChild(btnDel);
 
-    tableRow.appendChild(controls);
+	tableRow.appendChild(controls);
 }
 
 function addContactRow(contact) {
-    const contactIcon = document.createElement("td");
-    contactIcon.innerHTML = `<p class="circle">${contact.iconLetter}</p>`
+	const contactIcon = document.createElement("td");
+	contactIcon.innerHTML = `<p class="circle">${contact.iconLetter}</p>`;
 
-    const contactName = document.createElement("td");
-    contactName.innerText = contact.name;
+	const contactName = document.createElement("td");
+	contactName.innerText = contact.name;
 
-    const contactTel = document.createElement("td");
-    contactTel.innerText = contact.tel;
+	const contactTel = document.createElement("td");
+	contactTel.innerText = contact.tel;
 
-    const row = document.createElement("tr");
-    row.className = "container-row";
+	const row = document.createElement("tr");
+	row.className = "container-row";
 
-    row.appendChild(contactIcon);
-    row.appendChild(contactName);
-    row.appendChild(contactTel);
+	row.appendChild(contactIcon);
+	row.appendChild(contactName);
+	row.appendChild(contactTel);
 
-    appendControlsOnRow(row);
+	appendControlsOnRow(row);
 
-    let tBody = table.querySelector("tbody");
+	let tBody = table.querySelector("tbody");
 
-    for (tr of tBody.querySelectorAll("tr:not(#tr-default)")) {
-        if (!tr.cells[1]) continue;
+	for (tr of tBody.querySelectorAll("tr:not(#tr-default)")) {
+		if (!tr.cells[1]) continue;
 
-        if (contact.name < tr.cells[1].innerText) {
-            return tBody.insertBefore(row, tr);
-        }
-    }
+		if (contact.name < tr.cells[1].innerText) {
+			return tBody.insertBefore(row, tr);
+		}
+	}
 
-    tBody.appendChild(row);
+	tBody.appendChild(row);
 }
 
 function updateContactRow(contact) {
-    cells = tableRowOnEdit.querySelectorAll("td");
-    cells[0].firstElementChild.innerText = contact.iconLetter;
-    cells[1].innerText = contact.name;
-    cells[2].innerText = contact.tel;
+	cells = tableRowOnEdit.querySelectorAll("td");
+	cells[0].firstElementChild.innerText = contact.iconLetter;
+	cells[1].innerText = contact.name;
+	cells[2].innerText = contact.tel;
 }
 
 function filterTable(name) {
-    let nameLow = name.toLowerCase();
-    let numFound = 0;
+	let nameLow = name.toLowerCase();
+	let numFound = 0;
 
-    table.querySelectorAll("tr").forEach((row) => {
-        if (row.cells[1] && row.cells[1].innerText.toLowerCase().match(`^${nameLow}`)) {
-            showElements(row);
-            numFound++;
-        } else if (row.cells[1]) {
-            hideElements(row);
-        }
-    });
+	table.querySelectorAll("tr").forEach((row) => {
+		if (row.cells[1] && row.cells[1].innerText.toLowerCase().match(`^${nameLow}`)) {
+			showElements(row);
+			numFound++;
+		} else if (row.cells[1]) {
+			hideElements(row);
+		}
+	});
 
-    if (!numFound) {
-        showElements(tableRowDefault);
-    } else {        
-        hideElements(tableRowDefault);
-    }
+	if (!numFound) {
+		showElements(tableRowDefault);
+	} else {
+		hideElements(tableRowDefault);
+	}
 }
 
 function onNewContactClick(event) {
-    event.preventDefault();
+	event.preventDefault();
 
-    showElements(form);
+	showElements(form);
 }
 
 function onSearchInput(event) {
-    event.preventDefault();
+	event.preventDefault();
 
-    if (table.childElementCount > 0) {
-        filterTable(event.target.value);
-    }    
+	if (table.childElementCount > 0) {
+		filterTable(event.target.value);
+	}
 }
 
 function onSubmitClick(event) {
-    form.querySelectorAll("input").forEach((el) => el.setCustomValidity(""));
+	form.querySelectorAll("input").forEach((el) => el.setCustomValidity(""));
 }
 
 function onInputContactName(event) {
-    form.querySelector("#icon-person-large p").innerText =
-        event.target.value ? event.target.value[0].toUpperCase() : "-";
+	form.querySelector("#icon-person-large p").innerText = event.target.value ? event.target.value[0].toUpperCase() : "-";
 }
 
 function onInputContactTel(event) {
-    let value = event.target.value.replace(/(\D)/g, "");
+	let value = event.target.value.replace(/(\D)/g, "");
 
-    if (value.length > 9) {
-        value = value.replace(/(\d{2})(\d{5})(\d+)/g, "($1) $2-$3");
-    } else {
-        value = value.replace(/(\d{5})(\d+)/g, "$1-$2");
-    }
+	if (value.length > 9) {
+		value = value.replace(/(\d{2})(\d{5})(\d+)/g, "($1) $2-$3");
+	} else {
+		value = value.replace(/(\d{5})(\d+)/g, "$1-$2");
+	}
 
-    event.target.value = value;
+	event.target.value = value;
 }
 
 function onFormSubmit(event) {
-    event.preventDefault();
+	event.preventDefault();
 
-    contact = newContact();
+	contact = newContact();
 
-    if (hasDuplicates(contact)) {
-        form.querySelector("#tel-num").setCustomValidity("Telefone já está cadastrado.");
-        form.querySelector("#tel-num").reportValidity();
+	if (hasDuplicates(contact)) {
+		form.querySelector("#tel-num").setCustomValidity("Telefone já está cadastrado.");
+		form.querySelector("#tel-num").reportValidity();
 
-        return false;
-    }
+		return false;
+	}
 
-    if (!tableRowOnEdit) {
-        addContactRow(contact);
-    } else {
-        updateContactRow(contact);
-        tableRowOnEdit = null;
-    }
+	if (!tableRowOnEdit) {
+		addContactRow(contact);
+	} else {
+		updateContactRow(contact);
+		tableRowOnEdit = null;
+	}
 
-    clearForm();
-    hideElements(form, tableRowDefault);
+	clearForm();
+	hideElements(form, tableRowDefault);
 }
 
 function onFormReset(event) {
-    event.preventDefault();
+	event.preventDefault();
 
-    clearForm();
-    hideElements(form);
+	clearForm();
+	hideElements(form);
 }
 
 function onCallClick(tableRow) {
-    const callNum = tableRow.cells[2].innerText.replace(/\D+/g, "");
+	const callNum = tableRow.cells[2].innerText.replace(/\D+/g, "");
 
-    window.location = `tel:+55${callNum}`;
+	window.location = `tel:+55${callNum}`;
 }
 
 function onEditClick(tableRow) {
-    tableRowOnEdit = tableRow;
+	tableRowOnEdit = tableRow;
 
-    fillForm(tableRowOnEdit);
+	fillForm(tableRowOnEdit);
 
-    showElements(form);
+	showElements(form);
 }
 
 function onRemoveClick(tableRow) {
-    tableRow.remove();
+	tableRow.remove();
 
-    if (table.querySelector("tbody").childElementCount < 2) {
-        showElements(tableRowDefault);
-    }
+	if (table.querySelector("tbody").childElementCount < 2) {
+		showElements(tableRowDefault);
+	}
 }
 
 btnNewContact.addEventListener("click", (e) => onNewContactClick(e));

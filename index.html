@@ -1,95 +1,79 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lista de Contatos</title>
-    <link rel="stylesheet" href="index.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <main class="container-col">
-      <div class="container-col" id="main-header">
-        <div id="title">
-          <img
-            src="./images/contacts.png"
-            alt="icone da lista de contatos"
-            id="title-icon"
-          />
-          <h1>CONTATOS</h1>
-        </div>
-        <div class="container-row" id="toolbar">
-          <div class="container-row" id="search-bar">
-            <label for="search-input">
-              <img
-                src="./images/lupe.png"
-                alt="lupa de pesquisa"
-                id="search-icon"
-              />
-            </label>
-            <input
-              type="text"
-              name="search-input"
-              id="search-input"
-              placeholder="Pesquise..."
-            />
-          </div>
-          <button class="container-row" id="btn-new-contact">
-            <img src="./images/add.png" alt="adicionar" width="16px" />
-            Novo contato
-          </button>
-        </div>
-      </div>
-      <div class="container-row hide" id="main-form">
-        <div id="icon-person-large">
-          <p class="circle">-</p>
-        </div>
-        <form class="container-row" id="form-contact">
-          <div id="form-inputs">
-            <label for="tel-name">Nome:</label>
-            <input
-              type="text"
-              name="tel-name"
-              id="tel-name"
-              required
-              title="Insira o nome do contato."
-              maxlength="32"
-            />
-            <label for="tel-num">Número:</label>
-            <input
-              type="tel"
-              name="tel-num"
-              id="tel-num"
-              required
-              title="Insira o número do telefone."
-              maxlength="15"
-            />
-          </div>
-          <div class="container-row" id="form-controls">
-            <button class="btn-icon" type="submit">
-              <img src="./images/ok.png" alt="concluir cadastro" />
-            </button>
-            <button class="btn-icon" type="reset">
-              <img src="./images/cancel.png" alt="cancelar cadastro" />
-            </button>
-          </div>
-        </form>
-      </div>
-      <div class="container-col" id="main-table">
-        <table>
-          <tbody>
-            <tr class="container-row" id="tr-default">
-              <td>---</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </main>
-  </body>
-  <script src="index.js"></script>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Lista de Contatos</title>
+		<link rel="stylesheet" href="index.css" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+	</head>
+	<body>
+		<main class="container-col">
+			<div class="container-col" id="main-header">
+				<div id="title">
+					<img src="./images/contacts.png" alt="icone da lista de contatos" id="title-icon" />
+					<h1>CONTATOS</h1>
+				</div>
+				<div class="container-row" id="toolbar">
+					<div class="container-row" id="search-bar">
+						<label for="search-input">
+							<img src="./images/lupe.png" alt="lupa de pesquisa" id="search-icon" />
+						</label>
+						<input type="text" name="search-input" id="search-input" placeholder="Pesquise..." />
+					</div>
+					<button class="container-row" id="btn-new-contact">
+						<img src="./images/add.png" alt="adicionar" width="16px" />
+						Novo contato
+					</button>
+				</div>
+			</div>
+			<div class="container-row hide" id="main-form">
+				<div id="icon-person-large">
+					<p class="circle">-</p>
+				</div>
+				<form class="container-row" id="form-contact">
+					<div id="form-inputs">
+						<label for="tel-name">Nome:</label>
+						<input
+							type="text"
+							name="tel-name"
+							id="tel-name"
+							required
+							title="Insira o nome do contato."
+							maxlength="32"
+						/>
+						<label for="tel-num">Número:</label>
+						<input
+							type="tel"
+							name="tel-num"
+							id="tel-num"
+							required
+							title="Insira o número do telefone."
+							maxlength="15"
+						/>
+					</div>
+					<div class="container-row" id="form-controls">
+						<button class="btn-icon" type="submit">
+							<img src="./images/ok.png" alt="concluir cadastro" />
+						</button>
+						<button class="btn-icon" type="reset">
+							<img src="./images/cancel.png" alt="cancelar cadastro" />
+						</button>
+					</div>
+				</form>
+			</div>
+			<div class="container-col" id="main-table">
+				<table>
+					<tbody>
+						<tr class="container-row" id="tr-default">
+							<td>---</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</main>
+	</body>
+	<script src="index.js"></script>
 </html>
