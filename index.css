@@ -106,13 +106,15 @@ main {
 
 #search-input {
   width: 100%;
+  padding-left: 32px;
+  margin-right: 12px;
 }
 
 #search-icon {
   width: 16px;
   position: absolute;
   top: 8px;
-  right: 24px;
+  left: 8px;
   opacity: 75%;
 }
 

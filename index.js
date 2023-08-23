@@ -126,13 +126,22 @@ function updateContactRow(contact) {
 
 function filterTable(name) {
     let nameLow = name.toLowerCase();
+    let numFound = 0;
+
     table.querySelectorAll("tr").forEach((row) => {
         if (row.cells[1] && row.cells[1].innerText.toLowerCase().match(`^${nameLow}`)) {
             showElements(row);
+            numFound++;
         } else if (row.cells[1]) {
             hideElements(row);
         }
     });
+
+    if (!numFound) {
+        showElements(tableRowDefault);
+    } else {        
+        hideElements(tableRowDefault);
+    }
 }
 
 function onNewContactClick(event) {
