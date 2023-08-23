@@ -13,10 +13,10 @@ function clearForm() {
 
 function fillForm(tableRow) {
     let contact = getContact(tableRow);
+
     form.querySelector("#icon-person-large p").innerText = contact.iconLetter;
     form.querySelector("#tel-name").value = contact.name;
-    form.querySelector("#tel-ddd").value = contact.tel.split(" ")[0].replace(/\(|\)/g, "");
-    form.querySelector("#tel-num").value = contact.tel.split(" ")[1];
+    form.querySelector("#tel-num").value = contact.tel;
 }
 
 function hideElements(...elements) {
@@ -44,8 +44,7 @@ function newContact() {
 
     contact.iconLetter = form.querySelector("#icon-person-large p").innerText;
     contact.name = form.querySelector("#tel-name").value;
-    contact.tel = `(${form.querySelector("#tel-ddd").value}) `;
-    contact.tel += form.querySelector("#tel-num").value;
+    contact.tel = form.querySelector("#tel-num").value;
 
     return contact;
 }
@@ -160,10 +159,15 @@ function onInputContactName(event) {
 }
 
 function onInputContactTel(event) {
-    event.target.value =
-        event.target.value
-            .replace(/(\D)/g, "")
-            .replace(/(\d{5})(\d+)/g, "$1-$2");
+    let value = event.target.value.replace(/(\D)/g, "");
+
+    if (value.length > 9) {
+        value = value.replace(/(\d{2})(\d{5})(\d+)/g, "($1) $2-$3");
+    } else {
+        value = value.replace(/(\d{5})(\d+)/g, "$1-$2");
+    }
+
+    event.target.value = value;
 }
 
 function onFormSubmit(event) {

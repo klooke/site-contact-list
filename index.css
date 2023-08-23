@@ -154,23 +154,16 @@ main {
 
 #form-inputs {
   display: grid;
-  grid-template-columns: repeat(3, minmax(48px, auto));
-  gap: 4px;
+  grid-template-columns: repeat(2, auto);
+  gap: 8px;
   width: auto;
   margin: 0 auto;
   align-items: center;
 
   > input {
     text-align: center;
+    width: 250px;
   }
-}
-
-#tel-name {
-  grid-column: 2 / 4;
-}
-
-#tel-ddd {
-  width: 48px;
 }
 
 #main-table {
@@ -204,6 +197,11 @@ main {
     max-width: 40%;
     overflow-wrap: break-word;
   }
+
+  > table td:not(:first-child, :last-child) {
+    width: 100%;
+    margin-left: 16px;
+  }
 }
 
 #tr-default {
@@ -216,11 +214,16 @@ main {
   }
 
   input {
+    max-width: min-content;
     max-height: 24px;
   }
 
   body {
     font-size: small;
+  }
+
+  #search-input {
+    max-width: 100%;
   }
 
   #search-icon {

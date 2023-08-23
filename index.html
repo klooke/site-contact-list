@@ -57,26 +57,17 @@
               name="tel-name"
               id="tel-name"
               required
+              title="Insira o nome do contato."
               maxlength="32"
             />
-            <label for="tel-ddd">Número:</label>
-            <input
-              type="number"
-              name="tel-ddd"
-              id="tel-ddd"
-              required
-              min="0"
-              max="99"
-            />
-            <label class="hide" for="tel-num">-</label>
+            <label for="tel-num">Número:</label>
             <input
               type="tel"
               name="tel-num"
               id="tel-num"
               required
-              pattern="\d{5}-\d{4}"
-              title="ex.: XXXXX-XXXX."
-              maxlength="10"
+              title="Insira o número do telefone."
+              maxlength="15"
             />
           </div>
           <div class="container-row" id="form-controls">
