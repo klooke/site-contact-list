@@ -179,28 +179,28 @@ main {
 	> * img {
 		max-height: 16px;
 	}
+}
 
-	> table {
-		width: 100%;
-		border-collapse: collapse;
-	}
+#table-contact {
+	width: 100%;
+	border-collapse: collapse;
 
-	> table tr {
+	> tbody tr {
 		padding: 8px;
 		background-color: white;
 		border-bottom: 1px solid gray;
 	}
 
-	> table tr:hover:not(#tr-default) {
+	> tbody tr:hover:not(#tr-default) {
 		background-color: lightblue;
 	}
 
-	> table td {
+	> tbody td {
 		max-width: 40%;
 		overflow-wrap: break-word;
 	}
 
-	> table td:not(:first-child, :last-child) {
+	> tbody td:not(:first-child, :last-child) {
 		width: 100%;
 		margin-left: 16px;
 	}
