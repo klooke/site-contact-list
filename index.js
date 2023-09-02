@@ -1,50 +1,57 @@
-const btnNewContact = document.getElementById("btn-new-contact");
 const searchInput = document.getElementById("search-input");
-const form = document.getElementById("main-form");
-const table = document.getElementById("main-table");
+const btnNewContact = document.getElementById("btn-new-contact");
+
+const form = document.getElementById("form-contact");
+const formContactIcon = document.getElementById("icon-person-large");
+const formContactName = document.getElementById("tel-name");
+const formContactPhone = document.getElementById("tel-num");
+const formSubmit = form.querySelector('button[type="submit"]');
+
+const table = document.getElementById("table-contact");
 const tableRowDefault = document.getElementById("tr-default");
 
 let tableRowOnEdit = null;
 
 function clearForm() {
-	form.querySelector("#icon-person-large p").innerText = "-";
-	form.querySelectorAll("input").forEach((el) => (el.value = ""));
+	formContactIcon.firstElementChild.innerText = "-";
+	formContactName.value = "";
+	formContactPhone.value = "";
 }
 
 function fillForm(tableRow) {
 	let contact = getContact(tableRow);
 
-	form.querySelector("#icon-person-large p").innerText = contact.iconLetter;
-	form.querySelector("#tel-name").value = contact.name;
-	form.querySelector("#tel-num").value = contact.tel;
-}
-
-function hideElements(...elements) {
-	elements.forEach((el) => el.classList.add("hide"));
+	formContactIcon.firstElementChild.innerText = contact.iconLetter;
+	formContactName.value = contact.name;
+	formContactPhone.value = contact.tel;
 }
 
 function showElements(...elements) {
 	elements.forEach((el) => el.classList.remove("hide"));
 }
 
-function hasDuplicates(contact) {
-	let duplicates = 0;
+function hideElements(...elements) {
+	elements.forEach((el) => el.classList.add("hide"));
+}
 
-	Array.from(table.querySelectorAll("tbody tr")).forEach((el) => {
-		if (el !== tableRowOnEdit && el.cells[2] && el.cells[2].innerText === contact.tel) {
-			duplicates++;
+function hasDuplicates({ tel }) {
+	for (let row of table.rows) {
+		if (row === tableRowOnEdit) continue;
+
+		if (tel === row.cells[2]?.innerText) {
+			return true;
 		}
-	});
+	}
 
-	return duplicates > 0;
+	return false;
 }
 
 function newContact() {
 	let contact = {};
 
-	contact.iconLetter = form.querySelector("#icon-person-large p").innerText;
-	contact.name = form.querySelector("#tel-name").value;
-	contact.tel = form.querySelector("#tel-num").value;
+	contact.iconLetter = formContactIcon.firstElementChild.innerText;
+	contact.name = formContactName.value;
+	contact.tel = formContactPhone.value;
 
 	return contact;
 }
@@ -66,17 +73,17 @@ function appendControlsOnRow(tableRow) {
 	const btnCall = document.createElement("button");
 	btnCall.className = "btn-icon";
 	btnCall.innerHTML = `<img src="./images/tel.png" alt="Ligar para o contato" />`;
-	btnCall.onclick = () => onCallClick(tableRow);
+	btnCall.addEventListener("click", () => onCallClick(tableRow));
 
 	const btnEdit = document.createElement("button");
 	btnEdit.className = "btn-icon";
 	btnEdit.innerHTML = `<img src="./images/edit.png" alt="Editar o contato" />`;
-	btnEdit.onclick = () => onEditClick(tableRow);
+	btnEdit.addEventListener("click", () => onEditClick(tableRow));
 
 	const btnDel = document.createElement("button");
 	btnDel.className = "btn-icon";
 	btnDel.innerHTML = `<img src="./images/bin.png" alt="Deletar o contato" />`;
-	btnDel.onclick = () => onRemoveClick(tableRow);
+	btnDel.addEventListener("click", () => onRemoveClick(tableRow));
 
 	controls.appendChild(btnCall);
 	controls.appendChild(btnEdit);
@@ -95,26 +102,24 @@ function addContactRow(contact) {
 	const contactTel = document.createElement("td");
 	contactTel.innerText = contact.tel;
 
-	const row = document.createElement("tr");
-	row.className = "container-row";
+	const newRow = document.createElement("tr");
+	newRow.className = "container-row";
 
-	row.appendChild(contactIcon);
-	row.appendChild(contactName);
-	row.appendChild(contactTel);
+	newRow.appendChild(contactIcon);
+	newRow.appendChild(contactName);
+	newRow.appendChild(contactTel);
 
-	appendControlsOnRow(row);
+	appendControlsOnRow(newRow);
 
-	let tBody = table.querySelector("tbody");
+	for (let row of table.rows) {
+		if (row === tableRowDefault) continue;
 
-	for (tr of tBody.querySelectorAll("tr:not(#tr-default)")) {
-		if (!tr.cells[1]) continue;
-
-		if (contact.name < tr.cells[1].innerText) {
-			return tBody.insertBefore(row, tr);
+		if (contact.name < row.cells[1]?.innerText) {
+			return table.firstElementChild.insertBefore(newRow, row);
 		}
 	}
 
-	tBody.appendChild(row);
+	table.firstElementChild.appendChild(newRow);
 }
 
 function updateContactRow(contact) {
@@ -125,45 +130,43 @@ function updateContactRow(contact) {
 }
 
 function filterTable(name) {
-	let nameLow = name.toLowerCase();
-	let numFound = 0;
+	let found = 0;
 
-	table.querySelectorAll("tr").forEach((row) => {
-		if (row.cells[1] && row.cells[1].innerText.toLowerCase().match(`^${nameLow}`)) {
+	for (let row of table.rows) {
+		if (row.cells[1]?.innerText.toLowerCase().match(`^${name.toLowerCase()}`)) {
+			found++;
 			showElements(row);
-			numFound++;
-		} else if (row.cells[1]) {
+		} else {
 			hideElements(row);
 		}
-	});
+	}
 
-	if (!numFound) {
+	if (!found) {
 		showElements(tableRowDefault);
-	} else {
-		hideElements(tableRowDefault);
+	}
+}
+
+function onSearchInput(event) {
+	event.preventDefault();
+
+	if (table.rows.length > 0) {
+		filterTable(event.target.value);
 	}
 }
 
 function onNewContactClick(event) {
 	event.preventDefault();
 
-	showElements(form);
+	showElements(form.parentElement);
 }
 
-function onSearchInput(event) {
-	event.preventDefault();
-
-	if (table.childElementCount > 0) {
-		filterTable(event.target.value);
-	}
-}
-
-function onSubmitClick(event) {
-	form.querySelectorAll("input").forEach((el) => el.setCustomValidity(""));
+function onSubmitClick() {
+	formContactName.setCustomValidity("");
+	formContactPhone.setCustomValidity("");
 }
 
 function onInputContactName(event) {
-	form.querySelector("#icon-person-large p").innerText = event.target.value ? event.target.value[0].toUpperCase() : "-";
+	formContactIcon.firstElementChild.innerText = event.target.value ? event.target.value[0].toUpperCase() : "-";
 }
 
 function onInputContactTel(event) {
@@ -184,8 +187,8 @@ function onFormSubmit(event) {
 	contact = newContact();
 
 	if (hasDuplicates(contact)) {
-		form.querySelector("#tel-num").setCustomValidity("Telefone já está cadastrado.");
-		form.querySelector("#tel-num").reportValidity();
+		formContactPhone.setCustomValidity("Telefone já está cadastrado.");
+		formContactPhone.reportValidity();
 
 		return false;
 	}
@@ -198,14 +201,14 @@ function onFormSubmit(event) {
 	}
 
 	clearForm();
-	hideElements(form, tableRowDefault);
+	hideElements(form.parentElement, tableRowDefault);
 }
 
 function onFormReset(event) {
 	event.preventDefault();
 
 	clearForm();
-	hideElements(form);
+	hideElements(form.parentElement);
 }
 
 function onCallClick(tableRow) {
@@ -219,21 +222,23 @@ function onEditClick(tableRow) {
 
 	fillForm(tableRowOnEdit);
 
-	showElements(form);
+	showElements(form.parentElement);
 }
 
 function onRemoveClick(tableRow) {
 	tableRow.remove();
 
-	if (table.querySelector("tbody").childElementCount < 2) {
+	if (table.rows.length < 2) {
 		showElements(tableRowDefault);
 	}
 }
 
-btnNewContact.addEventListener("click", (e) => onNewContactClick(e));
-searchInput.addEventListener("input", (e) => onSearchInput(e));
-form.addEventListener("submit", (e) => onFormSubmit(e));
-form.addEventListener("reset", (e) => onFormReset(e));
-form.querySelector('button[type="submit"]').addEventListener("click", (e) => onSubmitClick(e));
-form.querySelector("#tel-name").addEventListener("input", (e) => onInputContactName(e));
-form.querySelector("#tel-num").addEventListener("input", (e) => onInputContactTel(e));
+searchInput.addEventListener("input", onSearchInput);
+btnNewContact.addEventListener("click", onNewContactClick);
+
+form.addEventListener("submit", onFormSubmit);
+form.addEventListener("reset", onFormReset);
+formSubmit.addEventListener("click", onSubmitClick);
+
+formContactName.addEventListener("input", onInputContactName);
+formContactPhone.addEventListener("input", onInputContactTel);
