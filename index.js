@@ -10,20 +10,55 @@ const formSubmit = form.querySelector('button[type="submit"]');
 const table = document.getElementById("table-contact");
 const tableRowDefault = document.getElementById("tr-default");
 
-let tableRowOnEdit = null;
+const inputs = {
+	get iconLetter() {
+		return formContactIcon.firstElementChild;
+	},
 
-function clearForm() {
-	formContactIcon.firstElementChild.innerText = "-";
-	formContactName.value = "";
-	formContactPhone.value = "";
-}
+	get name() {
+		return formContactName;
+	},
+
+	get phone() {
+		return formContactPhone;
+	},
+
+	set values({ name, phone }) {
+		this.name.value = name || "";
+		this.phone.value = phone || "";
+
+		this.refresh();
+	},
+
+	get values() {
+		return {
+			name: this.name.value,
+			phone: this.phone.value,
+		};
+	},
+
+	clear() {
+		this.values = {};
+	},
+
+	refresh() {
+		this.iconLetter.innerText = this.name.value[0]?.toUpperCase() || "-";
+	},
+
+	validity() {
+		this.name.setCustomValidity("");
+		this.phone.setCustomValidity("");
+	},
+};
+
+let tableRowOnEdit = null;
 
 function fillForm(tableRow) {
 	let contact = getContact(tableRow);
+	
+	inputs.values = contact;
 
-	formContactIcon.firstElementChild.innerText = contact.iconLetter;
-	formContactName.value = contact.name;
-	formContactPhone.value = contact.tel;
+	inputs.refresh();
 }
 
 function showElements(...elements) {
@@ -34,11 +69,11 @@ function hideElements(...elements) {
 	elements.forEach((el) => el.classList.add("hide"));
 }
 
-function hasDuplicates({ tel }) {
+function hasDuplicates({ phone }) {
 	for (let row of table.rows) {
 		if (row === tableRowOnEdit) continue;
 
-		if (tel === row.cells[2]?.innerText) {
+		if (phone === row.cells[2]?.innerText) {
 			return true;
 		}
 	}
@@ -46,22 +81,11 @@ function hasDuplicates({ tel }) {
 	return false;
 }
 
-function newContact() {
-	let contact = {};
-
-	contact.iconLetter = formContactIcon.firstElementChild.innerText;
-	contact.name = formContactName.value;
-	contact.tel = formContactPhone.value;
-
-	return contact;
-}
-
 function getContact(tableRow) {
 	let contact = {};
 
-	contact.iconLetter = tableRow.cells[0].innerText;
 	contact.name = tableRow.cells[1].innerText;
-	contact.tel = tableRow.cells[2].innerText;
+	contact.phone = tableRow.cells[2].innerText;
 
 	return contact;
 }
@@ -92,15 +116,15 @@ function appendControlsOnRow(tableRow) {
 	tableRow.appendChild(controls);
 }
 
-function addContactRow(contact) {
+function addContactRow({ name, phone }) {
 	const contactIcon = document.createElement("td");
-	contactIcon.innerHTML = `<p class="circle">${contact.iconLetter}</p>`;
+	contactIcon.innerHTML = `<p class="circle">${name[0] || "-"}</p>`;
 
 	const contactName = document.createElement("td");
-	contactName.innerText = contact.name;
+	contactName.innerText = name;
 
 	const contactTel = document.createElement("td");
-	contactTel.innerText = contact.tel;
+	contactTel.innerText = phone;
 
 	const newRow = document.createElement("tr");
 	newRow.className = "container-row";
@@ -114,7 +138,7 @@ function addContactRow(contact) {
 	for (let row of table.rows) {
 		if (row === tableRowDefault) continue;
 
-		if (contact.name < row.cells[1]?.innerText) {
+		if (name < row.cells[1]?.innerText) {
 			return table.firstElementChild.insertBefore(newRow, row);
 		}
 	}
@@ -122,11 +146,11 @@ function addContactRow(contact) {
 	table.firstElementChild.appendChild(newRow);
 }
 
-function updateContactRow(contact) {
+function updateContactRow({ name, phone }) {
 	cells = tableRowOnEdit.querySelectorAll("td");
-	cells[0].firstElementChild.innerText = contact.iconLetter;
-	cells[1].innerText = contact.name;
-	cells[2].innerText = contact.tel;
+	cells[0].firstElementChild.innerText = name[0] || "-";
+	cells[1].innerText = name;
+	cells[2].innerText = phone;
 }
 
 function filterTable(name) {
@@ -161,16 +185,24 @@ function onNewContactClick(event) {
 }
 
 function onSubmitClick() {
-	formContactName.setCustomValidity("");
-	formContactPhone.setCustomValidity("");
+	let contact = inputs.values;
+
+	if (hasDuplicates(contact)) {
+		inputs.phone.setCustomValidity("Telefone já cadastrado!");
+		inputs.phone.reportValidity();
+
+		return false;
+	}
+
+	inputs.validity();
 }
 
-function onInputContactName(event) {
-	formContactIcon.firstElementChild.innerText = event.target.value ? event.target.value[0].toUpperCase() : "-";
+function onInputName() {
+	inputs.refresh();
 }
 
-function onInputContactTel(event) {
-	let value = event.target.value.replace(/(\D)/g, "");
+function onInputPhone({ target }) {
+	let value = target.value.replace(/\D+/g, "");
 
 	if (value.length > 9) {
 		value = value.replace(/(\d{2})(\d{5})(\d+)/g, "($1) $2-$3");
@@ -178,36 +210,33 @@ function onInputContactTel(event) {
 		value = value.replace(/(\d{5})(\d+)/g, "$1-$2");
 	}
 
-	event.target.value = value;
+	target.value = value;
 }
 
 function onFormSubmit(event) {
 	event.preventDefault();
 
-	contact = newContact();
-
-	if (hasDuplicates(contact)) {
-		formContactPhone.setCustomValidity("Telefone já está cadastrado.");
-		formContactPhone.reportValidity();
-
-		return false;
-	}
+	let contact = inputs.values;
 
 	if (!tableRowOnEdit) {
 		addContactRow(contact);
 	} else {
-		updateContactRow(contact);
 		tableRowOnEdit = null;
+		updateContactRow(contact);
 	}
 
-	clearForm();
+	inputs.clear();
+
 	hideElements(form.parentElement, tableRowDefault);
 }
 
 function onFormReset(event) {
 	event.preventDefault();
 
-	clearForm();
+	tableRowOnEdit = null;
+
+	inputs.clear();
+
 	hideElements(form.parentElement);
 }
 
@@ -240,5 +269,5 @@ form.addEventListener("submit", onFormSubmit);
 form.addEventListener("reset", onFormReset);
 formSubmit.addEventListener("click", onSubmitClick);
 
-formContactName.addEventListener("input", onInputContactName);
-formContactPhone.addEventListener("input", onInputContactTel);
+inputs.name.addEventListener("input", onInputName);
+inputs.phone.addEventListener("input", onInputPhone);
