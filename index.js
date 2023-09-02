@@ -51,15 +51,108 @@ const inputs = {
 	},
 };
 
-let tableRowOnEdit = null;
+const listContact = {
+	get items() {
+		return table.rows;
+	},
 
-function fillForm(tableRow) {
-	let contact = getContact(tableRow);
-	
-	inputs.values = contact;
+	selectedItem: null,
 
-	inputs.refresh();
-}
+	get(index) {
+		return {
+			name: this.items[index]?.cells[1]?.innerText,
+			phone: this.items[index]?.cells[2]?.innerText,
+
+			match(name) {
+				return this.name?.toLowerCase().match(`^${name.toLowerCase()}`);
+			},
+		};
+	},
+
+	add({ name, phone }) {
+		if (this.selectedItem) {
+			this.selectedItem.cells[0].firstElementChild.innerText = name[0]?.toUpperCase() || "-";
+			this.selectedItem.cells[1].innerText = name;
+			this.selectedItem.cells[2].innerText = phone;
+			this.selectedItem = null;
+
+			return;
+		}
+
+		let index = this.getIndexSorted({ name });
+		let newRow = table.insertRow(index);
+		newRow.className = "container-row";
+
+		let iconCell = newRow.insertCell();
+		iconCell.innerHTML = `<p class="circle">${name[0]?.toUpperCase() || "-"}</p>`;
+
+		let nameCell = newRow.insertCell();
+		nameCell.innerText = name || "-";
+
+		let phoneCell = newRow.insertCell();
+		phoneCell.innerText = phone || "-";
+
+		let group = newRow.insertCell();
+		group.className = "container-row";
+
+		let btnCall = document.createElement("button");
+		btnCall.className = "btn-icon";
+		btnCall.innerHTML = '<img src="./images/tel.png" alt="ligar para o contato" />';
+		btnCall.addEventListener("click", () => onCallClick(phone));
+
+		let btnEdit = document.createElement("button");
+		btnEdit.className = "btn-icon";
+		btnEdit.innerHTML = '<img src="./images/edit.png" alt="Editar o contato" />';
+		btnEdit.addEventListener("click", () => onEditClick(newRow.rowIndex));
+
+		let btnDel = document.createElement("button");
+		btnDel.className = "btn-icon";
+		btnDel.innerHTML = '<img src="./images/bin.png" alt="Excluir o contato" />';
+		btnDel.addEventListener("click", () => onDeleteClick(newRow.rowIndex));
+
+		group.appendChild(btnCall);
+		group.appendChild(btnEdit);
+		group.appendChild(btnDel);
+	},
+
+	select(index) {
+		this.selectedItem = this.items[index];
+
+		return this.get(index);
+	},
+
+	delete(index) {
+		if (!index) return;
+
+		this.items[index].remove();
+	},
+
+	empty() {
+		return !(this.items.length - 1);
+	},
+
+	contains({ phone }) {
+		for (let item of this.items) {
+			if (item === this.selectedItem) continue;
+
+			if (this.get(item.rowIndex).phone === phone) {
+				return true;
+			}
+		}
+
+		return false;
+	},
+
+	getIndexSorted({ name }) {
+		for (let item of this.items) {
+			if (name?.toLowerCase() < this.get(item.rowIndex).name?.toLowerCase()) {
+				return item.rowIndex;
+			}
+		}
+
+		return -1;
+	},
+};
 
 function showElements(...elements) {
 	elements.forEach((el) => el.classList.remove("hide"));
@@ -69,99 +162,15 @@ function hideElements(...elements) {
 	elements.forEach((el) => el.classList.add("hide"));
 }
 
-function hasDuplicates({ phone }) {
-	for (let row of table.rows) {
-		if (row === tableRowOnEdit) continue;
-
-		if (phone === row.cells[2]?.innerText) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
-function getContact(tableRow) {
-	let contact = {};
-
-	contact.name = tableRow.cells[1].innerText;
-	contact.phone = tableRow.cells[2].innerText;
-
-	return contact;
-}
-
-function appendControlsOnRow(tableRow) {
-	const controls = document.createElement("td");
-	controls.className = "container-row";
-
-	const btnCall = document.createElement("button");
-	btnCall.className = "btn-icon";
-	btnCall.innerHTML = `<img src="./images/tel.png" alt="Ligar para o contato" />`;
-	btnCall.addEventListener("click", () => onCallClick(tableRow));
-
-	const btnEdit = document.createElement("button");
-	btnEdit.className = "btn-icon";
-	btnEdit.innerHTML = `<img src="./images/edit.png" alt="Editar o contato" />`;
-	btnEdit.addEventListener("click", () => onEditClick(tableRow));
-
-	const btnDel = document.createElement("button");
-	btnDel.className = "btn-icon";
-	btnDel.innerHTML = `<img src="./images/bin.png" alt="Deletar o contato" />`;
-	btnDel.addEventListener("click", () => onRemoveClick(tableRow));
-
-	controls.appendChild(btnCall);
-	controls.appendChild(btnEdit);
-	controls.appendChild(btnDel);
-
-	tableRow.appendChild(controls);
-}
-
-function addContactRow({ name, phone }) {
-	const contactIcon = document.createElement("td");
-	contactIcon.innerHTML = `<p class="circle">${name[0] || "-"}</p>`;
-
-	const contactName = document.createElement("td");
-	contactName.innerText = name;
-
-	const contactTel = document.createElement("td");
-	contactTel.innerText = phone;
-
-	const newRow = document.createElement("tr");
-	newRow.className = "container-row";
-
-	newRow.appendChild(contactIcon);
-	newRow.appendChild(contactName);
-	newRow.appendChild(contactTel);
-
-	appendControlsOnRow(newRow);
-
-	for (let row of table.rows) {
-		if (row === tableRowDefault) continue;
-
-		if (name < row.cells[1]?.innerText) {
-			return table.firstElementChild.insertBefore(newRow, row);
-		}
-	}
-
-	table.firstElementChild.appendChild(newRow);
-}
-
-function updateContactRow({ name, phone }) {
-	cells = tableRowOnEdit.querySelectorAll("td");
-	cells[0].firstElementChild.innerText = name[0] || "-";
-	cells[1].innerText = name;
-	cells[2].innerText = phone;
-}
-
 function filterTable(name) {
 	let found = 0;
 
-	for (let row of table.rows) {
-		if (row.cells[1]?.innerText.toLowerCase().match(`^${name.toLowerCase()}`)) {
+	for (let item of listContact.items) {
+		if (listContact.get(item.rowIndex).match(name)) {
 			found++;
-			showElements(row);
+			showElements(item);
 		} else {
-			hideElements(row);
+			hideElements(item);
 		}
 	}
 
@@ -170,24 +179,18 @@ function filterTable(name) {
 	}
 }
 
-function onSearchInput(event) {
-	event.preventDefault();
-
-	if (table.rows.length > 0) {
-		filterTable(event.target.value);
-	}
+function onSearchInput({ target }) {
+	!listContact.empty() ? filterTable(target.value) : null;
 }
 
-function onNewContactClick(event) {
-	event.preventDefault();
-
+function onNewContactClick() {
 	showElements(form.parentElement);
 }
 
 function onSubmitClick() {
 	let contact = inputs.values;
 
-	if (hasDuplicates(contact)) {
+	if (listContact.contains(contact)) {
 		inputs.phone.setCustomValidity("Telefone já cadastrado!");
 		inputs.phone.reportValidity();
 
@@ -204,11 +207,8 @@ function onInputName() {
 function onInputPhone({ target }) {
 	let value = target.value.replace(/\D+/g, "");
 
-	if (value.length > 9) {
-		value = value.replace(/(\d{2})(\d{5})(\d+)/g, "($1) $2-$3");
-	} else {
-		value = value.replace(/(\d{5})(\d+)/g, "$1-$2");
-	}
+	value =
+		value.length > 9 ? value.replace(/(\d{2})(\d{5})(\d+)/g, "($1) $2-$3") : value.replace(/(\d{5})(\d+)/g, "$1-$2");
 
 	target.value = value;
 }
@@ -217,13 +217,7 @@ function onFormSubmit(event) {
 	event.preventDefault();
 
 	let contact = inputs.values;
-
-	if (!tableRowOnEdit) {
-		addContactRow(contact);
-	} else {
-		tableRowOnEdit = null;
-		updateContactRow(contact);
-	}
+	listContact.add(contact);
 
 	inputs.clear();
 
@@ -233,33 +227,29 @@ function onFormSubmit(event) {
 function onFormReset(event) {
 	event.preventDefault();
 
-	tableRowOnEdit = null;
+	listContact.selectedItem = null;
 
 	inputs.clear();
 
 	hideElements(form.parentElement);
 }
 
-function onCallClick(tableRow) {
-	const callNum = tableRow.cells[2].innerText.replace(/\D+/g, "");
+function onCallClick(phone) {
+	let numberPhone = phone.replace(/\D+/g, "");
 
-	window.location = `tel:+55${callNum}`;
+	window.location = `tel:${numberPhone.length > 9 ? "+55" : ""}${numberPhone}`;
 }
 
-function onEditClick(tableRow) {
-	tableRowOnEdit = tableRow;
-
-	fillForm(tableRowOnEdit);
+function onEditClick(index) {
+	inputs.values = listContact.select(index);
 
 	showElements(form.parentElement);
 }
 
-function onRemoveClick(tableRow) {
-	tableRow.remove();
+function onDeleteClick(index) {
+	listContact.delete(index);
 
-	if (table.rows.length < 2) {
-		showElements(tableRowDefault);
-	}
+	listContact.empty() ? showElements(tableRowDefault) : null;
 }
 
 searchInput.addEventListener("input", onSearchInput);
